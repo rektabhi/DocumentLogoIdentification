@@ -23,29 +23,20 @@ def countMatchingSURFFeatures(features1, features2):
     search_params = dict()   # or pass empty dictionary
     flann = cv2.FlannBasedMatcher(index_params,search_params)
     matches = flann.knnMatch(features1, features2,k=2)
-#    matchesMask = [[0,0] for i in range(len(matches))]
     # ratio test as per Lowe's paper
     count = 0
-    for i,(m,n) in enumerate(matches):
-#        if m.distance < constants.ratioTestLowe*n.distance:
-            matchesMask[i]=[1,0]
+    for m,n in matches:
+        if m.distance < constants.ratioTestLowe*n.distance:
             count+=1
     return count
 
-#draw_params = dict(matchColor = (0,255,0),
-#                   singlePointColor = (255,0,0),
-#                   matchesMask = matchesMask,
-#                   flags = 0)
-#img3 = cv2.drawMatchesKnn(image1, k1, image2, k2, matches,None,**draw_params)
-#utils.imshow(img3)
 
 def predictSURFFeatures(descriptorsTrain, descriptorTest, trainLabels, numOfLogosPerClass):
-    m = len(descriptorsTrain)
+    numTrainingExamples = len(descriptorsTrain)
     numLabels = len(numOfLogosPerClass)
     count = np.zeros((numLabels, ))
-    for i in range(m):
+    for i in range(numTrainingExamples):
         count[trainLabels[i]-1] += countMatchingSURFFeatures(descriptorsTrain[i], descriptorTest)
-    #print(count)
     count/=numOfLogosPerClass
     return (np.argmax(count))
 
@@ -53,8 +44,6 @@ def predictSURFFeatures(descriptorsTrain, descriptorTest, trainLabels, numOfLogo
 def matchFeatures(trainImages, testImages, trainLabels, testlabels):
     SURFFeaturesTrain = []
     numOfLogosPerClass = utils.numOfLogosPerClass(trainLabels, constants.numLabels)
-#    print(numOfLogosPerClass)
-#    return
     for image in trainImages:
         keypoints, descriptors = extractSURFFeatures(image)
         SURFFeaturesTrain.append(descriptors)
