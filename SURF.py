@@ -38,7 +38,7 @@ def predictSURFFeatures(descriptorsTrain, descriptorTest, trainLabels, numOfLogo
     for i in range(numTrainingExamples):
         count[trainLabels[i]-1] += countMatchingSURFFeatures(descriptorsTrain[i], descriptorTest)
     count/=numOfLogosPerClass
-    return (np.argmax(count))
+    return np.argmax(count)+1, np.amax(count)
 
     
 def matchFeatures(trainImages, testImages, trainLabels, testlabels):
@@ -48,14 +48,13 @@ def matchFeatures(trainImages, testImages, trainLabels, testlabels):
         keypoints, descriptors = extractSURFFeatures(image)
         SURFFeaturesTrain.append(descriptors)
         
-    count = 0
+    predictions = []
+    predProb = []
     for index, image in enumerate(testImages):
         keypoints, descriptors = extractSURFFeatures(image)
-        prediction = predictSURFFeatures(SURFFeaturesTrain, descriptors, trainLabels, numOfLogosPerClass)
-        if prediction != testlabels[index]-1:
-#            utils.imshow(image)
-            print(prediction, testlabels[index])
-            count+=1
+        x, y = predictSURFFeatures(SURFFeaturesTrain, descriptors, trainLabels, numOfLogosPerClass)
+        predictions.append(x)
+        predProb.append(y)
+
+    return predictions, predProb
     
-    print(count)
-        

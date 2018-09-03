@@ -21,7 +21,7 @@ def extractHOGFeatures(image):
     return H
 
 
-def HOG(trainImages, testImages, trainLabels, testLabels):
+def matchHOGFeatures(trainImages, testImages, trainLabels, testLabels):
     HOGFeaturesTrain = []
     for image in trainImages:
         HOGFeaturesTrain.append(extractHOGFeatures(image))
@@ -33,23 +33,7 @@ def HOG(trainImages, testImages, trainLabels, testLabels):
     scaler = preprocessing.StandardScaler()
     HOGFeaturesTrain = scaler.fit_transform(HOGFeaturesTrain)
     HOGFeaturesTest = scaler.transform(HOGFeaturesTest)
-    
     model = trainSVM(HOGFeaturesTrain, train_labels)
-    #print(model)
-    #print(np.max(HOGFeaturesTrain))
-    #for image_feature in HOGFeaturesTrain:
-    predictions = model.predict(HOGFeaturesTrain)
-    #print(predictions != train_labels)
-    predictions = []
     predictions = model.predict(HOGFeaturesTest)
-    print(predictions)
-    print(test_labels)
-    count = 0
-    print(predictions != test_labels)
-    for index in range(np.size(test_labels)):
-        if predictions[index] != test_labels[index]:
-            print(index)
-#            print(stringLabels[predictions[index]-1], stringLabels[test_labels[index]-1])
-#            utils.imshow(testImages[index])
-            count+=1
-    print(count)
+    prob = model.predict_proba(HOGFeaturesTest)
+    return predictions, prob
