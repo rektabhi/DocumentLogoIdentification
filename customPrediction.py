@@ -50,7 +50,6 @@ class Model:
         self.SURFLabels = np.load(constants.SURFLabelLoc)
         
     def predictLabel(self, image):
-        print(image)
         image = LoadImages.preprocessImage(image)
         keypoints, descriptors = SIFT.extractSIFTFeatures(image)
         predictedSIFTClass, predictedSIFTConfidence = SIFT.predictSIFTFeatures(

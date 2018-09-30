@@ -11,7 +11,7 @@ import cv2
 app = Flask(__name__)
 from customPrediction import Model
 
-@app.route('/healtcheck')
+@app.route('/healthcheck')
 def healtcheck():
     return 'Server is running!'
 

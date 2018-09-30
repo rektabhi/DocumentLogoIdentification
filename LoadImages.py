@@ -22,7 +22,6 @@ def loadTrainImages(dire = "../Functions/Train/", totalTrainImageCount = 246):
     for index in range(100,totalTrainImageCount + 1):
         imgLoc = dire + str(index) + ".png"
         trainImages.append(cv2.imread(imgLoc,cv2.IMREAD_COLOR))
-        trainImages[-1] = cv2.cvtColor(trainImages[-1], cv2.COLOR_RGB2GRAY)
     print("Done!")
     print("Preprocessing Training Images")
     for index, img in enumerate(trainImages):
@@ -50,6 +49,7 @@ def removeSaltAndPepperNoise(image):
     return cv2.medianBlur(image, 3)
 
 def preprocessImage(img):
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img = imbinarize(img)
     if detectNoise(img)>constants.saltAndPepperThreshold:
         img = removeSaltAndPepperNoise(img)
