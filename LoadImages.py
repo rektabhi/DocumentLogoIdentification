@@ -26,9 +26,7 @@ def loadTrainImages(dire = "../Functions/Train/", totalTrainImageCount = 246):
     print("Done!")
     print("Preprocessing Training Images")
     for index, img in enumerate(trainImages):
-        trainImages[index] = imbinarize(img)
-        if detectNoise(trainImages[index]) > constants.saltAndPepperThreshold:
-            trainImages[index] = removeSaltAndPepperNoise(trainImages[index])
+        trainImages[index] = preprocessImage(img)
     print("Done!")
     return trainImages
 
@@ -43,12 +41,16 @@ def loadTestImages(dire = "../Functions/Test/", totalTestIamges = 73):
     print("Done!")
     print("Preprocessing Test Images")
     for index, img in enumerate(testImages):
-        testImages[index] = imbinarize(img)
-        if detectNoise(testImages[index]) > constants.saltAndPepperThreshold:
-            testImages[index] = removeSaltAndPepperNoise(testImages[index])
+        testImages[index] = preprocessImage(img)
     print("Done!")
     return testImages
 
 
 def removeSaltAndPepperNoise(image):
     return cv2.medianBlur(image, 3)
+
+def preprocessImage(img):
+    img = imbinarize(img)
+    if detectNoise(img)>constants.saltAndPepperThreshold:
+        img = removeSaltAndPepperNoise(img)
+    return img

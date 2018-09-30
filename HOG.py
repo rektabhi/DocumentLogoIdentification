@@ -13,6 +13,7 @@ from trainSVM import trainSVM
 from sklearn import svm
 from classLabels import y as train_labels, y2 as test_labels
 from sklearn import preprocessing
+from sklearn.externals import joblib
 
 
 def extractHOGFeatures(image):
@@ -32,8 +33,10 @@ def matchHOGFeatures(trainImages, testImages, trainLabels, testLabels):
     
     scaler = preprocessing.StandardScaler()
     HOGFeaturesTrain = scaler.fit_transform(HOGFeaturesTrain)
+    joblib.dump(scaler, constants.ScalerLoc)
     HOGFeaturesTest = scaler.transform(HOGFeaturesTest)
     model = trainSVM(HOGFeaturesTrain, train_labels)
+    joblib.dump(model, constants.HOGModelLoc)
     predictions = model.predict(HOGFeaturesTest)
     prob = model.predict_proba(HOGFeaturesTest)
     return predictions, prob
