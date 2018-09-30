@@ -7,11 +7,12 @@ Created on Sat Sep  1 10:46:33 2018
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import constants
 
 
 def imshow(image):
     cv2.imshow('image', image)
-    cv2.waitKey(5000)
+    cv2.waitKey(constants.waitTimeImage)
     cv2.destroyAllWindows()
 
 

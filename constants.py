@@ -9,3 +9,4 @@ saltAndPepperThreshold = 2000
 numLabels = 15
 ratioTestLowe = 0.6
 numTestImages = 74
+waitTimeImage = 5000
