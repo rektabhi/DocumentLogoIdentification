@@ -3,7 +3,7 @@ from customPrediction import Model
 import cv2
 import numpy as np
 
-addr = 'http://192.168.137.129:5000'
+addr = 'http://192.168.0.3:5000'
 test_url = addr + '/predict_image'
 
 # prepare headers for http request
@@ -16,7 +16,7 @@ def post_image():
     image = open(image_file, 'rb').read()
     response = requests.post(test_url, data=image, headers=headers)
     print(response.content)
-post_image()
+#post_image()
 
 def check():
     model = Model()
@@ -27,7 +27,7 @@ def check():
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     print(model.predictLabel(image))
 
-#check()
+check()
 
 
 

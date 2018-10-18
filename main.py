@@ -17,9 +17,9 @@ import SIFT
 import pickle
 
 
-#trainImages = LoadImages.loadTrainImages()
-#testImages = LoadImages.loadTestImages()
-#stringLabels = readLabels()
+trainImages = LoadImages.loadTrainImages()
+testImages = LoadImages.loadTestImages()
+stringLabels = readLabels()
 
 HOGPredictions, HOGProb = HOG.matchHOGFeatures(trainImages, testImages, train_labels, test_labels)
 SURFPredictions, SURFProb = SURF.matchFeatures(trainImages, testImages, train_labels, test_labels)
@@ -77,7 +77,7 @@ def confidenceCheck():
     print(minx, miny, "Minimum: ", minimum)
     with open(constants.bestXY, 'wb+') as f:
         pickle.dump([minx, miny], f)
-
+confidenceCheck()
 count = 0
 for i in range(74):
     if HOGMis[i] and SURFMis[i] and predFromProbMis[i] and SIFTMis[i]:

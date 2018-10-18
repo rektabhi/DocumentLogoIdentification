@@ -36,7 +36,6 @@ def loadTestImages(dire = "../Functions/Test/", totalTestIamges = 73):
     for index in range(0, totalTestIamges + 1):
         imgLoc = dire + str(index) + ".png"
         testImages.append(cv2.imread(imgLoc, cv2.IMREAD_COLOR))
-        testImages[-1] = cv2.cvtColor(testImages[-1], cv2.COLOR_RGB2GRAY)
     print("Done!")
     print("Preprocessing Test Images")
     for index, img in enumerate(testImages):

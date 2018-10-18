@@ -15,6 +15,8 @@ import LoadImages
 import HOG
 from sklearn.externals import joblib
 import pickle
+import chooseBestPrediction
+
 
 class Model:
     def __init__(self):
@@ -66,10 +68,17 @@ class Model:
         HOGFeatures = HOG.extractHOGFeatures(image)
         HOGFeatures = HOGFeatures.reshape(1, -1)
         HOGFeatures = self.scaler.transform(HOGFeatures)
-
         predictedHOGClass = self.HOGModel.predict(HOGFeatures)
-        print(predictedHOGClass)
-        return 'Prediction!'
+        HOGProb = self.HOGModel.predict_proba(HOGFeatures)
+        predictedValues = dict()
+        predictedValues["predictedSIFTClass"] = predictedSIFTClass
+        predictedValues["predictedSIFTConfidence"] = predictedSIFTConfidence
+        predictedValues["predictedSURFClass"] = predictedSURFClass
+        predictedValues["predictedSURFConfidence"] = predictedSURFConfidence
+        predictedValues["predictedHOGClass"] = predictedHOGClass
+        predictedValues["HOGProb"] = HOGProb
+        return chooseBestPrediction.chooseBestPrediction(self, predictedValues)
+        
         
     def chooseBestPrediction(self):
         return 0
