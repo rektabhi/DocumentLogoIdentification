@@ -4,6 +4,8 @@ Created on Sat Sep  1 11:16:07 2018
 
 @author: Abhishek Bansal
 """
+import sys
+sys.path.append('..\..\LogoIdentification')
 import numpy as np
 from src import loadImages, SIFT, constants, HOG, SURF, utils
 

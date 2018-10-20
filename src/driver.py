@@ -6,6 +6,8 @@ Created on Sun Sep 30 18:43:18 2018
 """
 
 from flask import Flask, request
+import sys
+sys.path.append('..\..\LogoIdentification')
 from src.customPrediction import Model
 import numpy as np
 import cv2
