@@ -6,9 +6,8 @@ Created on Wed Sep  5 02:30:06 2018
 """
 
 import cv2
-import utils
 import numpy as np
-import constants
+from src import constants, utils
 
 
 def extractSIFTFeatures(image):
@@ -19,28 +18,28 @@ def extractSIFTFeatures(image):
 
 def countMatchingSIFTFeatures(features1, features2):
     FLANN_INDEX_KDTREE = 1
-    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-    search_params = dict()   # or pass empty dictionary
-    flann = cv2.FlannBasedMatcher(index_params,search_params)
-    matches = flann.knnMatch(features1, features2,k=2)
+    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    search_params = dict()  # or pass empty dictionary
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(features1, features2, k=2)
     # ratio test as per Lowe's paper
     count = 0
-    for m,n in matches:
-        if m.distance < constants.ratioTestLowe*n.distance:
-            count+=1
+    for m, n in matches:
+        if m.distance < constants.ratioTestLowe * n.distance:
+            count += 1
     return count
 
 
 def predictSIFTFeatures(descriptorsTrain, descriptorTest, trainLabels, numOfLogosPerClass):
     numTrainingExamples = len(descriptorsTrain)
     numLabels = len(numOfLogosPerClass)
-    count = np.zeros((numLabels, ))
+    count = np.zeros((numLabels,))
     for i in range(numTrainingExamples):
-        count[trainLabels[i]-1] += countMatchingSIFTFeatures(descriptorsTrain[i], descriptorTest)
-    count/=numOfLogosPerClass
-    return np.argmax(count)+1, np.amax(count)
+        count[trainLabels[i] - 1] += countMatchingSIFTFeatures(descriptorsTrain[i], descriptorTest)
+    count /= numOfLogosPerClass
+    return np.argmax(count) + 1, np.amax(count)
 
-    
+
 def matchFeatures(trainImages, testImages, trainLabels, testlabels, saveModel=True):
     SIFTFeaturesTrain = []
     numOfLogosPerClass = utils.numOfLogosPerClass(trainLabels, constants.numLabels)
@@ -50,7 +49,7 @@ def matchFeatures(trainImages, testImages, trainLabels, testlabels, saveModel=Tr
     if saveModel:
         np.save(constants.SIFTModelLoc, SIFTFeaturesTrain)
         np.save(constants.SIFTLabelLoc, trainLabels)
-        
+
     predictions = []
     predProb = []
     for index, image in enumerate(testImages):
@@ -60,4 +59,3 @@ def matchFeatures(trainImages, testImages, trainLabels, testlabels, saveModel=Tr
         predProb.append(y)
 
     return predictions, predProb
-    

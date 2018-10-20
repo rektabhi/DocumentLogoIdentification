@@ -6,13 +6,14 @@ Created on Sun Sep 30 18:43:18 2018
 """
 
 from flask import Flask, request
-from customPrediction import Model
+from src.customPrediction import Model
 import numpy as np
 import cv2
 import json
 import base64
 import PIL
 import io
+
 app = Flask(__name__)
 
 
@@ -31,9 +32,6 @@ def predict_image():
     imFileLoc = "C:/Users/Abhishek Bansal/Desktop/img.jpg"
     cv2.imwrite(imFileLoc, cv2Image)
 
-
-
-
     response = {}
     response["status"] = 200;
     response["answer"] = "Unknown Answer"
@@ -43,6 +41,3 @@ def predict_image():
     model = Model()
     prediction = model.predictLabel(cv2Image)
     return prediction
-
-
-

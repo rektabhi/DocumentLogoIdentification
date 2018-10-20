@@ -7,7 +7,7 @@ Created on Sat Sep  1 10:46:33 2018
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import constants
+from src import constants
 
 
 def imshow(image):
@@ -17,36 +17,40 @@ def imshow(image):
 
 
 def numOfLogosPerClass(labels, n):
-    numLabels = np.zeros((n, ))
+    numLabels = np.zeros((n,))
     for label in labels:
-        numLabels[label-1]+=1
+        numLabels[label - 1] += 1
     return numLabels
+
 
 def checkMispredictions(actualLabels, predictedLabels):
     actualLabels = np.array(actualLabels)
     predictedLabels = np.array(predictedLabels)
-    (num, ) = np.shape(actualLabels)
-    mispredictions = np.zeros((num, ), dtype=np.bool)
+    (num,) = np.shape(actualLabels)
+    mispredictions = np.zeros((num,), dtype=np.bool)
     for index in range(num):
-        if actualLabels[index]==predictedLabels[index]:
+        if actualLabels[index] == predictedLabels[index]:
             mispredictions[index] = False
         else:
             mispredictions[index] = True
     return mispredictions
 
+
 def countMis(predictedLabels):
     count = 0
     for result in predictedLabels:
         if result:
-            count+=1
+            count += 1
     return count
 
+
 def plotHOGProb(HOGProb, actualLabels):
-    predFromProb = np.argmax(HOGProb, axis=1)+1
+    predFromProb = np.argmax(HOGProb, axis=1) + 1
     actualLabels = np.array(actualLabels)
     maxProbs = np.amax(HOGProb, axis=1)
     plt.plot(maxProbs)
-    
+
+
 def plotSURFProb(SURFProb, actualLabels):
     actualLabels = np.array(actualLabels)
     plt.plot(SURFProb)

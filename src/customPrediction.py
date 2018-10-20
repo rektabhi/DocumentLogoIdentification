@@ -6,16 +6,9 @@ Created on Sun Sep 30 12:41:52 2018
 """
 
 import numpy as np
-import SURF
-import SIFT
-import cv2
-import constants
-import utils
-import LoadImages
-import HOG
 from sklearn.externals import joblib
 import pickle
-import chooseBestPrediction
+from src import chooseBestPrediction, loadImages, SIFT, constants, HOG, SURF, utils
 
 
 class Model:
@@ -30,7 +23,7 @@ class Model:
         self.x = None
         self.y = None
         self.loadModels()
-        
+
     def loadModels(self):
         self.loadHOGModel()
         self.loadSIFTModel()
@@ -42,29 +35,29 @@ class Model:
     def loadHOGModel(self):
         self.HOGModel = joblib.load(constants.HOGModelLoc)
         self.scaler = joblib.load(constants.ScalerLoc)
-        
+
     def loadSIFTModel(self):
         self.SIFTModel = np.load(constants.SIFTModelLoc)
         self.SIFTLabels = np.load(constants.SIFTLabelLoc)
-    
+
     def loadSURFModels(self):
         self.SURFModel = np.load(constants.SURFModelLoc)
         self.SURFLabels = np.load(constants.SURFLabelLoc)
-        
+
     def predictLabel(self, image):
-        image = LoadImages.preprocessImage(image)
+        image = loadImages.preprocessImage(image)
         keypoints, descriptors = SIFT.extractSIFTFeatures(image)
         predictedSIFTClass, predictedSIFTConfidence = SIFT.predictSIFTFeatures(
-                self.SIFTModel,
-                descriptors,
-                self.SIFTLabels,
-                self.numOfLogosPerClass)
+            self.SIFTModel,
+            descriptors,
+            self.SIFTLabels,
+            self.numOfLogosPerClass)
         keypoints, descriptors = SURF.extractSURFFeatures(image)
         predictedSURFClass, predictedSURFConfidence = SURF.predictSURFFeatures(
-                self.SURFModel,
-                descriptors,
-                self.SURFLabels,
-                self.numOfLogosPerClass)
+            self.SURFModel,
+            descriptors,
+            self.SURFLabels,
+            self.numOfLogosPerClass)
         HOGFeatures = HOG.extractHOGFeatures(image)
         HOGFeatures = HOGFeatures.reshape(1, -1)
         HOGFeatures = self.scaler.transform(HOGFeatures)
@@ -78,13 +71,9 @@ class Model:
         predictedValues["predictedHOGClass"] = predictedHOGClass
         predictedValues["HOGProb"] = HOGProb
         return chooseBestPrediction.chooseBestPrediction(self, predictedValues)
-        
-        
+
     def chooseBestPrediction(self):
         return 0
 
-#model = Model()
-#model.predictLabel(testImages[0])
-
-
-
+# model = Model()
+# model.predictLabel(testImages[0])

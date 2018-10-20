@@ -7,8 +7,9 @@ Created on Sat Sep  1 15:26:06 2018
 
 from sklearn import svm
 
+
 def trainSVM(X, y):
     model = svm.SVC(probability=True)
-#    model = svm.LinearSVC()
+    #    model = svm.LinearSVC()
     model.fit(X, y)
     return model
