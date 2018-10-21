@@ -5,9 +5,6 @@ Created on Sat Sep  1 11:16:07 2018
 @author: Abhishek Bansal
 """
 import sys
-
-from sklearn.externals import joblib
-
 sys.path.append('..\..\LogoIdentification')
 import numpy as np
 from src import constants, utils
@@ -123,7 +120,6 @@ class Context:
 
     def loadSURFModel(self):
         self.surf.loadSURFModel()
-
 
 
 ctx = Context()

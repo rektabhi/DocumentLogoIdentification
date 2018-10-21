@@ -35,8 +35,6 @@ class LoadImages:
         for index, img in enumerate(self.trainImages):
             self.trainImages[index] = self.preprocessImage(img)
         print("Done!")
-        # TODO: remove return
-        return self.trainImages
 
     def loadTestImages(self, dire=constants.testImagesLocation, totalTestIamgesCount=constants.numTestImages):
         self.testImages = []
@@ -49,8 +47,6 @@ class LoadImages:
         for index, img in enumerate(self.testImages):
             self.testImages[index] = self.preprocessImage(img)
         print("Done!")
-        # TODO: Remove return as images already in object
-        return self.testImages
 
     def loadTrainLabels(self):
         self.trainLabels = trainLabels

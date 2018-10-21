@@ -49,20 +49,25 @@ class SIFT:
         self.SIFTFeaturesTrain = []
         self.trainLabels = images.trainLabels
         self.numOfLogosPerClass = images.numOfLogosPerClass
+        print("Extracting SIFT Features")
         for image in images.trainImages:
             keypoints, descriptors = self.extractSIFTFeatures(image)
             self.SIFTFeaturesTrain.append(descriptors)
+        print("Done!")
         if saveModel:
             np.save(constants.SIFTModelLoc, self.SIFTFeaturesTrain)
             np.save(constants.SIFTLabelLoc, self.trainLabels)
 
         self.predictions = []
         self.probability = []
+
+        print("Predicting Test Images - SIFT")
         for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSIFTFeatures(image)
             x, y = self.predictSIFTFeatures(descriptorTest)
             self.predictions.append(x)
             self.probability.append(y)
+        print("Done!")
 
         return self.predictions, self.probability
 

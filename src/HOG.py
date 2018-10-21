@@ -27,6 +27,8 @@ class HOG:
         return H
 
     def matchHOGFeatures(self, images, saveModel=True):
+
+        print("Extracting HOG Features")
         self.HOGFeaturesTrain = []
         for image in images.trainImages:
             self.HOGFeaturesTrain.append(self.extractHOGFeatures(image))
@@ -34,6 +36,7 @@ class HOG:
         self.HOGFeaturesTest = []
         for image in images.testImages:
             self.HOGFeaturesTest.append(self.extractHOGFeatures(image))
+        print("Done!")
 
         self.scaler = preprocessing.StandardScaler()
         self.HOGFeaturesTrain = self.scaler.fit_transform(self.HOGFeaturesTrain)
@@ -47,8 +50,11 @@ class HOG:
         if saveModel:
             joblib.dump(self.model, constants.HOGModelLoc)
 
+        print("Predicting Test Images - HOG")
         self.predictions = self.model.predict(self.HOGFeaturesTest)
         self.probability = self.model.predict_proba(self.HOGFeaturesTest)
+        print("Done!")
+
         return self.predictions, self.probability
 
     def loadHOGModel(self):

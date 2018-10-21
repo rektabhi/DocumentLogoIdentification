@@ -49,20 +49,25 @@ class SURF:
         self.SURFFeaturesTrain = []
         self.trainLabels = images.trainLabels
         self.numOfLogosPerClass = images.numOfLogosPerClass
+        print("Extracting SURF Features")
         for image in images.trainImages:
             keypoints, descriptors = self.extractSURFFeatures(image)
             self.SURFFeaturesTrain.append(descriptors)
+        print("Done!")
         if saveModel:
             np.save(constants.SURFModelLoc, self.SURFFeaturesTrain)
             np.save(constants.SURFLabelLoc, self.trainLabels)
 
         self.predictions = []
         self.probability = []
+
+        print("Predicting Test Images - SURF")
         for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSURFFeatures(image)
             x, y = self.predictSURFFeatures(descriptorTest)
             self.predictions.append(x)
             self.probability.append(y)
+        print("Done!")
 
         return self.predictions, self.probability
 
