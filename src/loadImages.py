@@ -6,8 +6,8 @@ Created on Fri Aug 31 17:02:20 2018
 """
 
 import cv2
+from src import constants, utils
 from src.DetectNoise import detectNoise
-from src import constants
 from src.classLabels import trainLabels, testLabels
 
 
@@ -18,6 +18,7 @@ class LoadImages:
         self.trainLabels = None
         self.testImages = None
         self.testLabels = None
+        self.numOfLogosPerClass = None
 
     def imbinarize(self, image):
         ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -66,3 +67,6 @@ class LoadImages:
         if detectNoise(img) > constants.saltAndPepperThreshold:
             img = self.removeSaltAndPepperNoise(img)
         return img
+
+    def loadNumOfLogosPerClass(self):
+        self.numOfLogosPerClass = utils.numOfLogosPerClass(self.trainLabels, constants.numLabels)

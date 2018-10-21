@@ -32,24 +32,18 @@ class Context:
         self.SIFTMis = None
         self.predFromProb = None
         self.predFromProbMis = None
-        self.numOfLogosPerClass = None
 
     def loadData(self):
         self.images.loadTestImages()
         self.images.loadTrainImages()
         self.images.loadTrainLabels()
         self.images.loadTestLabels()
+        self.images.loadNumOfLogosPerClass()
 
     def createModels(self):
-        self.hog.matchHOGFeatures(
-            self.images
-        )
-        self.sift.matchFeatures(
-            self.images
-        )
-        self.surf.matchFeatures(
-            self.images
-        )
+        self.hog.matchHOGFeatures(self.images)
+        self.sift.matchFeatures(self.images)
+        self.surf.matchFeatures(self.images)
 
     def checkMis(self):
         self.HOGMis = utils.checkMispredictions(self.images.testLabels, self.hog.predictions)
@@ -117,7 +111,7 @@ class Context:
         self.loadHOGModel()
         self.loadSIFTModel()
         self.loadSURFModel()
-        self.numOfLogosPerClass = utils.numOfLogosPerClass(self.sift.trainLabels, constants.numLabels)
+        self.images.loadNumOfLogosPerClass()
         with open(constants.bestXY, 'rb+') as f:
             self.x, self.y = pickle.load(f)
 
@@ -129,7 +123,6 @@ class Context:
 
     def loadSURFModel(self):
         self.surf.loadSURFModel()
-
 
 
 

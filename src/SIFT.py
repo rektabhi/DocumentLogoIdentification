@@ -21,6 +21,7 @@ class SIFT:
         self.flann = cv2.FlannBasedMatcher(self.index_params, self.search_params)
         self.predictions = None
         self.probability = None
+        self.numOfLogosPerClass = None
 
     def extractSIFTFeatures(self, image):
         keypoints, descriptors = self.sift.detectAndCompute(image, None)
@@ -35,19 +36,19 @@ class SIFT:
                 count += 1
         return count
 
-    def predictSIFTFeatures(self, descriptorTest, numOfLogosPerClass):
+    def predictSIFTFeatures(self, descriptorTest):
         numTrainingExamples = len(self.SIFTFeaturesTrain)
-        numLabels = len(numOfLogosPerClass)
+        numLabels = len(self.numOfLogosPerClass)
         count = np.zeros((numLabels,))
         for i in range(numTrainingExamples):
             count[self.trainLabels[i] - 1] += self.countMatchingSIFTFeatures(self.SIFTFeaturesTrain[i], descriptorTest)
-        count /= numOfLogosPerClass
+        count /= self.numOfLogosPerClass
         return np.argmax(count) + 1, np.amax(count)
 
     def matchFeatures(self, images, saveModel=True):
         self.SIFTFeaturesTrain = []
         self.trainLabels = images.trainLabels
-        numOfLogosPerClass = utils.numOfLogosPerClass(self.trainLabels, constants.numLabels)
+        self.numOfLogosPerClass = images.numOfLogosPerClass
         for image in images.trainImages:
             keypoints, descriptors = self.extractSIFTFeatures(image)
             self.SIFTFeaturesTrain.append(descriptors)
@@ -59,7 +60,7 @@ class SIFT:
         self.probability = []
         for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSIFTFeatures(image)
-            x, y = self.predictSIFTFeatures(descriptorTest, numOfLogosPerClass)
+            x, y = self.predictSIFTFeatures(descriptorTest)
             self.predictions.append(x)
             self.probability.append(y)
 
@@ -68,3 +69,4 @@ class SIFT:
     def loadSIFTModel(self):
         self.SIFTFeaturesTrain = np.load(constants.SIFTModelLoc)
         self.trainLabels = np.load(constants.SIFTLabelLoc)
+        # TODO: Add numOfLogosPerClass Initialization here

@@ -21,6 +21,7 @@ class SURF:
         self.flann = cv2.FlannBasedMatcher(self.index_params, self.search_params)
         self.predictions = None
         self.probability = None
+        self.numOfLogosPerClass = None
 
     def extractSURFFeatures(self, image):
         keypoints, descriptors = self.surf.detectAndCompute(image, None)
@@ -35,19 +36,19 @@ class SURF:
                 count += 1
         return count
 
-    def predictSURFFeatures(self, descriptorTest, numOfLogosPerClass):
+    def predictSURFFeatures(self, descriptorTest):
         numTrainingExamples = len(self.SURFFeaturesTrain)
-        numLabels = len(numOfLogosPerClass)
+        numLabels = len(self.numOfLogosPerClass)
         count = np.zeros((numLabels,))
         for i in range(numTrainingExamples):
             count[self.trainLabels[i] - 1] += self.countMatchingSURFFeatures(self.SURFFeaturesTrain[i], descriptorTest)
-        count /= numOfLogosPerClass
+        count /= self.numOfLogosPerClass
         return np.argmax(count) + 1, np.amax(count)
 
     def matchFeatures(self, images, saveModel=True):
         self.SURFFeaturesTrain = []
         self.trainLabels = images.trainLabels
-        numOfLogosPerClass = utils.numOfLogosPerClass(self.trainLabels, constants.numLabels)
+        self.numOfLogosPerClass = images.numOfLogosPerClass
         for image in images.trainImages:
             keypoints, descriptors = self.extractSURFFeatures(image)
             self.SURFFeaturesTrain.append(descriptors)
@@ -59,7 +60,7 @@ class SURF:
         self.probability = []
         for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSURFFeatures(image)
-            x, y = self.predictSURFFeatures(descriptorTest, numOfLogosPerClass)
+            x, y = self.predictSURFFeatures(descriptorTest)
             self.predictions.append(x)
             self.probability.append(y)
 
@@ -68,4 +69,6 @@ class SURF:
     def loadSURFModel(self):
         self.SURFFeaturesTrain = np.load(constants.SURFModelLoc)
         self.trainLabels = np.load(constants.SURFLabelLoc)
+        # TODO: Add numOfLogosPerClass Initialization here
+
 
