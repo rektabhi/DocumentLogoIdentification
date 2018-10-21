@@ -5,9 +5,8 @@ Created on Sun Sep  2 12:51:07 2018
 @author: Abhishek Bansal
 """
 from src import constants
-from skimage import feature
 from src.trainSVM import trainSVM
-from src.classLabels import trainLabels
+from skimage import feature
 from sklearn import preprocessing
 from sklearn.externals import joblib
 

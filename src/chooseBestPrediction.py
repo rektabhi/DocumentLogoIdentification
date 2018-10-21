@@ -5,7 +5,6 @@ Created on Mon Oct  1 00:42:29 2018
 @author: Abhishek Bansal
 """
 import numpy as np
-import cv2
 
 
 def chooseBestPrediction(model, predictedValues):

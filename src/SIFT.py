@@ -7,7 +7,7 @@ Created on Wed Sep  5 02:30:06 2018
 
 import cv2
 import numpy as np
-from src import constants, utils
+from src import constants
 
 
 class SIFT:

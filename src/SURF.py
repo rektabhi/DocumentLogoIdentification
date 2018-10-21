@@ -7,7 +7,7 @@ Created on Sat Sep  1 21:07:43 2018
 
 import cv2
 import numpy as np
-from src import constants, utils
+from src import constants
 
 
 class SURF:
