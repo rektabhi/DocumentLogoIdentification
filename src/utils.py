@@ -54,3 +54,8 @@ def plotHOGProb(HOGProb, actualLabels):
 def plotSURFProb(SURFProb, actualLabels):
     actualLabels = np.array(actualLabels)
     plt.plot(SURFProb)
+
+
+def plotSIFTProb(SIFTProb, actualLabels):
+    actualLabels = np.array(actualLabels)
+    plt.plot(SIFTProb)

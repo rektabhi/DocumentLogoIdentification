@@ -12,27 +12,42 @@ from sklearn import preprocessing
 from sklearn.externals import joblib
 
 
-def extractHOGFeatures(image):
-    H = feature.hog(image, orientations=9, pixels_per_cell=(8, 8),
-                    cells_per_block=(2, 2), transform_sqrt=True, block_norm="L2-Hys")
-    return H
+class HOG:
 
+    def __init__(self):
+        self.HOGFeaturesTrain = None
+        self.HOGFeaturesTest = None
+        self.predictions = None
+        self.probability = None
+        self.scaler = None
+        self.model = None
 
-def matchHOGFeatures(trainImages, testImages, trainLabels, testLabels):
-    HOGFeaturesTrain = []
-    for image in trainImages:
-        HOGFeaturesTrain.append(extractHOGFeatures(image))
+    def extractHOGFeatures(self, image):
+        H = feature.hog(image, orientations=9, pixels_per_cell=(8, 8),
+                        cells_per_block=(2, 2), transform_sqrt=True, block_norm="L2-Hys")
+        return H
 
-    HOGFeaturesTest = []
-    for image in testImages:
-        HOGFeaturesTest.append(extractHOGFeatures(image))
+    def matchHOGFeatures(self, trainImages, testImages, trainLabels, testLabels, saveModel=True):
+        self.HOGFeaturesTrain = []
+        for image in trainImages:
+            self.HOGFeaturesTrain.append(self.extractHOGFeatures(image))
 
-    scaler = preprocessing.StandardScaler()
-    HOGFeaturesTrain = scaler.fit_transform(HOGFeaturesTrain)
-    joblib.dump(scaler, constants.ScalerLoc)
-    HOGFeaturesTest = scaler.transform(HOGFeaturesTest)
-    model = trainSVM(HOGFeaturesTrain, train_labels)
-    joblib.dump(model, constants.HOGModelLoc)
-    predictions = model.predict(HOGFeaturesTest)
-    prob = model.predict_proba(HOGFeaturesTest)
-    return predictions, prob
+        self.HOGFeaturesTest = []
+        for image in testImages:
+            self.HOGFeaturesTest.append(self.extractHOGFeatures(image))
+
+        self.scaler = preprocessing.StandardScaler()
+        self.HOGFeaturesTrain = self.scaler.fit_transform(self.HOGFeaturesTrain)
+
+        if saveModel:
+            joblib.dump(self.scaler, constants.ScalerLoc)
+
+        self.HOGFeaturesTest = self.scaler.transform(self.HOGFeaturesTest)
+        self.model = trainSVM(self.HOGFeaturesTrain, train_labels)
+
+        if saveModel:
+            joblib.dump(self.model, constants.HOGModelLoc)
+
+        self.predictions = self.model.predict(self.HOGFeaturesTest)
+        self.probability = self.model.predict_proba(self.HOGFeaturesTest)
+        return self.predictions, self.probability

@@ -35,7 +35,7 @@ def predict_image():
     cv2.imwrite(imFileLoc, cv2Image)
 
     response = {}
-    response["status"] = 200;
+    response["status"] = 200
     response["answer"] = "Unknown Answer"
     if cv2Image is None:
         return json.dumps(response)
