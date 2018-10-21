@@ -13,6 +13,7 @@ from src import constants, utils
 class SIFT:
     def __init__(self):
         self.SIFTFeaturesTrain = None
+        self.trainLabels = None
         self.sift = cv2.xfeatures2d.SIFT_create()
         self.FLANN_INDEX_KDTREE = 1
         self.index_params = dict(algorithm=self.FLANN_INDEX_KDTREE, trees=5)
@@ -34,31 +35,36 @@ class SIFT:
                 count += 1
         return count
 
-    def predictSIFTFeatures(self, descriptorsTrain, descriptorTest, trainLabels, numOfLogosPerClass):
-        numTrainingExamples = len(descriptorsTrain)
+    def predictSIFTFeatures(self, descriptorTest, numOfLogosPerClass):
+        numTrainingExamples = len(self.SIFTFeaturesTrain)
         numLabels = len(numOfLogosPerClass)
         count = np.zeros((numLabels,))
         for i in range(numTrainingExamples):
-            count[trainLabels[i] - 1] += self.countMatchingSIFTFeatures(descriptorsTrain[i], descriptorTest)
+            count[self.trainLabels[i] - 1] += self.countMatchingSIFTFeatures(self.SIFTFeaturesTrain[i], descriptorTest)
         count /= numOfLogosPerClass
         return np.argmax(count) + 1, np.amax(count)
 
-    def matchFeatures(self, trainImages, testImages, trainLabels, testlabels, saveModel=True):
+    def matchFeatures(self, images, saveModel=True):
         self.SIFTFeaturesTrain = []
-        numOfLogosPerClass = utils.numOfLogosPerClass(trainLabels, constants.numLabels)
-        for image in trainImages:
+        self.trainLabels = images.trainLabels
+        numOfLogosPerClass = utils.numOfLogosPerClass(self.trainLabels, constants.numLabels)
+        for image in images.trainImages:
             keypoints, descriptors = self.extractSIFTFeatures(image)
             self.SIFTFeaturesTrain.append(descriptors)
         if saveModel:
             np.save(constants.SIFTModelLoc, self.SIFTFeaturesTrain)
-            np.save(constants.SIFTLabelLoc, trainLabels)
+            np.save(constants.SIFTLabelLoc, self.trainLabels)
 
         self.predictions = []
         self.probability = []
-        for index, image in enumerate(testImages):
+        for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSIFTFeatures(image)
-            x, y = self.predictSIFTFeatures(self.SIFTFeaturesTrain, descriptorTest, trainLabels, numOfLogosPerClass)
+            x, y = self.predictSIFTFeatures(descriptorTest, numOfLogosPerClass)
             self.predictions.append(x)
             self.probability.append(y)
 
         return self.predictions, self.probability
+
+    def loadSIFTModel(self):
+        self.SIFTFeaturesTrain = np.load(constants.SIFTModelLoc)
+        self.trainLabels = np.load(constants.SIFTLabelLoc)

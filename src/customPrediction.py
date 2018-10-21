@@ -33,7 +33,7 @@ class Model:
     def loadModels(self):
         self.loadHOGModel()
         self.loadSIFTModel()
-        self.loadSURFModels()
+        self.loadSURFModel()
         self.numOfLogosPerClass = utils.numOfLogosPerClass(self.SIFTLabels, constants.numLabels)
         with open(constants.bestXY, 'rb+') as f:
             self.x, self.y = pickle.load(f)
@@ -46,7 +46,7 @@ class Model:
         self.SIFTModel = np.load(constants.SIFTModelLoc)
         self.SIFTLabels = np.load(constants.SIFTLabelLoc)
 
-    def loadSURFModels(self):
+    def loadSURFModel(self):
         self.SURFModel = np.load(constants.SURFModelLoc)
         self.SURFLabels = np.load(constants.SURFLabelLoc)
 

@@ -8,14 +8,17 @@ Created on Fri Aug 31 17:02:20 2018
 import cv2
 from src.DetectNoise import detectNoise
 from src import constants
+from src.classLabels import trainLabels, testLabels
 
 
 class LoadImages:
     
     def __init__(self):
-        self.testImages = None
         self.trainImages = None
-    
+        self.trainLabels = None
+        self.testImages = None
+        self.testLabels = None
+
     def imbinarize(self, image):
         ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         return imgf
@@ -47,6 +50,12 @@ class LoadImages:
         print("Done!")
         # TODO: Remove return as images already in object
         return self.testImages
+
+    def loadTrainLabels(self):
+        self.trainLabels = trainLabels
+
+    def loadTestLabels(self):
+        self.testLabels = testLabels
 
     def removeSaltAndPepperNoise(self, image):
         return cv2.medianBlur(image, 3)

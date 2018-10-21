@@ -13,6 +13,7 @@ from src import constants, utils
 class SURF:
     def __init__(self):
         self.SURFFeaturesTrain = None
+        self.trainLabels = None
         self.surf = cv2.xfeatures2d.SURF_create()
         self.FLANN_INDEX_KDTREE = 1
         self.index_params = dict(algorithm=self.FLANN_INDEX_KDTREE, trees=5)
@@ -34,31 +35,37 @@ class SURF:
                 count += 1
         return count
 
-    def predictSURFFeatures(self, descriptorsTrain, descriptorTest, trainLabels, numOfLogosPerClass):
-        numTrainingExamples = len(descriptorsTrain)
+    def predictSURFFeatures(self, descriptorTest, numOfLogosPerClass):
+        numTrainingExamples = len(self.SURFFeaturesTrain)
         numLabels = len(numOfLogosPerClass)
         count = np.zeros((numLabels,))
         for i in range(numTrainingExamples):
-            count[trainLabels[i] - 1] += self.countMatchingSURFFeatures(descriptorsTrain[i], descriptorTest)
+            count[self.trainLabels[i] - 1] += self.countMatchingSURFFeatures(self.SURFFeaturesTrain[i], descriptorTest)
         count /= numOfLogosPerClass
         return np.argmax(count) + 1, np.amax(count)
 
-    def matchFeatures(self, trainImages, testImages, trainLabels, testlabels, saveModel=True):
+    def matchFeatures(self, images, saveModel=True):
         self.SURFFeaturesTrain = []
-        numOfLogosPerClass = utils.numOfLogosPerClass(trainLabels, constants.numLabels)
-        for image in trainImages:
+        self.trainLabels = images.trainLabels
+        numOfLogosPerClass = utils.numOfLogosPerClass(self.trainLabels, constants.numLabels)
+        for image in images.trainImages:
             keypoints, descriptors = self.extractSURFFeatures(image)
             self.SURFFeaturesTrain.append(descriptors)
         if saveModel:
             np.save(constants.SURFModelLoc, self.SURFFeaturesTrain)
-            np.save(constants.SURFLabelLoc, trainLabels)
+            np.save(constants.SURFLabelLoc, self.trainLabels)
 
         self.predictions = []
         self.probability = []
-        for index, image in enumerate(testImages):
+        for index, image in enumerate(images.testImages):
             keypoints, descriptorTest = self.extractSURFFeatures(image)
-            x, y = self.predictSURFFeatures(self.SURFFeaturesTrain, descriptorTest, trainLabels, numOfLogosPerClass)
+            x, y = self.predictSURFFeatures(descriptorTest, numOfLogosPerClass)
             self.predictions.append(x)
             self.probability.append(y)
 
         return self.predictions, self.probability
+
+    def loadSURFModel(self):
+        self.SURFFeaturesTrain = np.load(constants.SURFModelLoc)
+        self.trainLabels = np.load(constants.SURFLabelLoc)
+

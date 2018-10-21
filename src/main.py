@@ -5,6 +5,9 @@ Created on Sat Sep  1 11:16:07 2018
 @author: Abhishek Bansal
 """
 import sys
+
+from sklearn.externals import joblib
+
 sys.path.append('..\..\LogoIdentification')
 import numpy as np
 from src import constants, utils
@@ -13,7 +16,7 @@ from src.HOG import HOG
 from src.SIFT import SIFT
 from src.SURF import SURF
 from src.readLabels import readLabels
-from src.classLabels import y as train_labels, y2 as test_labels
+from src.classLabels import trainLabels, testLabels
 import pickle
 
 
@@ -24,51 +27,43 @@ class Context:
         self.sift = SIFT()
         self.surf = SURF()
         self.stringLabels = readLabels()
-        self.trainLabels = train_labels
-        self.testLabels = test_labels
         self.HOGMis = None
         self.SURFMis = None
         self.SIFTMis = None
         self.predFromProb = None
         self.predFromProbMis = None
+        self.numOfLogosPerClass = None
 
-    def loadImages(self):
+    def loadData(self):
         self.images.loadTestImages()
         self.images.loadTrainImages()
+        self.images.loadTrainLabels()
+        self.images.loadTestLabels()
 
     def createModels(self):
         self.hog.matchHOGFeatures(
-            self.images.trainImages,
-            self.images.testImages,
-            self.trainLabels,
-            self.testLabels
+            self.images
         )
         self.sift.matchFeatures(
-            self.images.trainImages,
-            self.images.testImages,
-            self.trainLabels,
-            self.testLabels
+            self.images
         )
         self.surf.matchFeatures(
-            self.images.trainImages,
-            self.images.testImages,
-            self.trainLabels,
-            self.testLabels
+            self.images
         )
 
     def checkMis(self):
-        self.HOGMis = utils.checkMispredictions(self.testLabels, self.hog.predictions)
-        self.SURFMis = utils.checkMispredictions(self.testLabels, self.surf.predictions)
-        self.SIFTMis = utils.checkMispredictions(self.testLabels, self.sift.predictions)
+        self.HOGMis = utils.checkMispredictions(self.images.testLabels, self.hog.predictions)
+        self.SURFMis = utils.checkMispredictions(self.images.testLabels, self.surf.predictions)
+        self.SIFTMis = utils.checkMispredictions(self.images.testLabels, self.sift.predictions)
 
     def plotProbabilities(self):
-        utils.plotSURFProb(self.surf.probability, self.testLabels)
-        utils.plotSIFTProb(self.sift.probability, self.testLabels)
-        utils.plotHOGProb(self.hog.probability, self.testLabels)
+        utils.plotSURFProb(self.surf.probability, self.images.testLabels)
+        utils.plotSIFTProb(self.sift.probability, self.images.testLabels)
+        utils.plotHOGProb(self.hog.probability, self.images.testLabels)
 
     def calculatePredFromProb(self):
         self.predFromProb = np.argmax(self.hog.probability, axis=1) + 1
-        self.predFromProbMis = utils.checkMispredictions(self.testLabels, self.predFromProb)
+        self.predFromProbMis = utils.checkMispredictions(self.images.testLabels, self.predFromProb)
 
     # Find optimum value of x and y which are used to find the better of the models
     def checkConfidenceOfDifferentClassifier(self):
@@ -99,7 +94,7 @@ class Context:
                     else:
                         bestPrediction[i] = self.predFromProb[i]
 
-                bestMis = utils.checkMispredictions(test_labels, bestPrediction)
+                bestMis = utils.checkMispredictions(testLabels, bestPrediction)
                 print(x, y, utils.countMis(bestMis))
                 if utils.countMis(bestMis) < minimum:
                     minimum = utils.countMis(bestMis)
@@ -118,9 +113,28 @@ class Context:
                 utils.imshow(self.images.testImages[i])
         print(count)
 
+    def loadModels(self):
+        self.loadHOGModel()
+        self.loadSIFTModel()
+        self.loadSURFModel()
+        self.numOfLogosPerClass = utils.numOfLogosPerClass(self.sift.trainLabels, constants.numLabels)
+        with open(constants.bestXY, 'rb+') as f:
+            self.x, self.y = pickle.load(f)
+
+    def loadHOGModel(self):
+        self.hog.loadHOGModel()
+
+    def loadSIFTModel(self):
+        self.sift.loadSIFTModel()
+
+    def loadSURFModel(self):
+        self.surf.loadSURFModel()
+
+
+
 
 ctx = Context()
-ctx.loadImages()
+ctx.loadData()
 ctx.createModels()
 ctx.checkMis()
 ctx.plotProbabilities()
