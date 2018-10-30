@@ -57,6 +57,7 @@ class SIFT:
         if saveModel:
             np.save(constants.SIFTModelLoc, self.SIFTFeaturesTrain)
             np.save(constants.SIFTLabelLoc, self.trainLabels)
+            np.save(constants.SURFNumOfLogosPerClass, self.numOfLogosPerClass)
 
         self.predictions = []
         self.probability = []
@@ -74,4 +75,4 @@ class SIFT:
     def loadSIFTModel(self):
         self.SIFTFeaturesTrain = np.load(constants.SIFTModelLoc)
         self.trainLabels = np.load(constants.SIFTLabelLoc)
-        # TODO: Add numOfLogosPerClass Initialization here
+        self.numOfLogosPerClass = np.load(constants.SIFTNumOfLogosPerClass)

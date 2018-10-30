@@ -57,6 +57,7 @@ class SURF:
         if saveModel:
             np.save(constants.SURFModelLoc, self.SURFFeaturesTrain)
             np.save(constants.SURFLabelLoc, self.trainLabels)
+            np.save(constants.SURFNumOfLogosPerClass, self.numOfLogosPerClass)
 
         self.predictions = []
         self.probability = []
@@ -74,6 +75,5 @@ class SURF:
     def loadSURFModel(self):
         self.SURFFeaturesTrain = np.load(constants.SURFModelLoc)
         self.trainLabels = np.load(constants.SURFLabelLoc)
-        # TODO: Add numOfLogosPerClass Initialization here
-
+        self.numOfLogosPerClass = np.load(constants.SURFNumOfLogosPerClass)
 
