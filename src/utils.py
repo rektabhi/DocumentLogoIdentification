@@ -59,3 +59,19 @@ def plotSURFProb(SURFProb, actualLabels):
 def plotSIFTProb(SIFTProb, actualLabels):
     actualLabels = np.array(actualLabels)
     plt.plot(SIFTProb)
+
+
+def rgb2gray(image):
+    if image.ndim == 3:
+        return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    else:
+        return image
+
+
+def imbinarize(image):
+    ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    return imgf
+
+
+def imcomplement(image):
+    return cv2.bitwise_not(image)
