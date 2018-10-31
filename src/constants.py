@@ -31,3 +31,7 @@ numOfDilation = 3
 binarizeOriginal = False
 kernel = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])
 kernel_ones = np.ones((3, 3), dtype=np.uint8)
+numPixelInSmallComponent = 5
+numPixelInLargeComponent = 1000
+percentageAreaVertical = 0.15
+percentageAreaHorizontal = 0.15
