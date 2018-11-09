@@ -20,10 +20,6 @@ class LoadImages:
         self.testLabels = None
         self.numOfLogosPerClass = None
 
-    def imbinarize(self, image):
-        ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        return imgf
-
     def loadTrainImages(self, dire=constants.trainImagesLocation, totalTrainImageCount=constants.numTrainImages):
         self.trainImages = []
         print("Loading Training Images")
