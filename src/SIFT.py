@@ -57,7 +57,7 @@ class SIFT:
         if saveModel:
             np.save(constants.SIFTModelLoc, self.SIFTFeaturesTrain)
             np.save(constants.SIFTLabelLoc, self.trainLabels)
-            np.save(constants.SURFNumOfLogosPerClass, self.numOfLogosPerClass)
+            np.save(constants.SIFTNumOfLogosPerClass, self.numOfLogosPerClass)
 
         self.predictions = []
         self.probability = []
