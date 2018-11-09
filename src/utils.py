@@ -62,6 +62,8 @@ def plotSIFTProb(SIFTProb, actualLabels):
 
 
 def rgb2gray(image):
+    if image is None:
+        return "Image not found"
     if image.ndim == 3:
         return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     else:
@@ -69,9 +71,24 @@ def rgb2gray(image):
 
 
 def imbinarize(image):
-    ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    imgf = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
     return imgf
 
 
 def imcomplement(image):
     return cv2.bitwise_not(image)
+
+
+def resize(image):
+    height, width = image.shape[:2]
+    max_height = constants.maxHeight
+    max_width = constants.maxWidth
+    if height > max_height or width > max_width:
+        scaling_factor = max_height / float(height)
+        if max_width / float(width) < scaling_factor:
+            scaling_factor = max_width / float(width)
+        image = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
+        return image
+

@@ -18,8 +18,8 @@ testImagesLocation = '../data/Test/'
 trainLabelsLoc = '../data/Train/Labels.csv'
 SIFTModelLoc = '../models/SIFTModel.npy'
 SIFTLabelLoc = '../models/SIFTLabels.npy'
-SIFTNumOfLogosPerClass = '/models/SIFTNumOfLogosPerClass.npy'
-SURFNumOfLogosPerClass = '/models/SURFNumOfLogosPerClass.npy'
+SIFTNumOfLogosPerClass = '../models/SIFTNumOfLogosPerClass.npy'
+SURFNumOfLogosPerClass = '../models/SURFNumOfLogosPerClass.npy'
 SURFModelLoc = '../models/SURFModel.npy'
 SURFLabelLoc = '../models/SURFLabels.npy'
 HOGModelLoc = '../models/HOGModel'
@@ -27,11 +27,16 @@ ScalerLoc = '../models/Scaler'
 bestXY = '../models/bestXY'
 
 
-numOfDilation = 3
+numOfDilation = 5
 binarizeOriginal = False
 kernel = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])
 kernel_ones = np.ones((3, 3), dtype=np.uint8)
-numPixelInSmallComponent = 5
+numPixelInSmallComponent = 20
 numPixelInLargeComponent = 1000
+nearbyFractionVertical = 0.05
+nearbyFractionHorizontal = 0.05
 percentageAreaVertical = 0.15
 percentageAreaHorizontal = 0.15
+maxHeight = 600
+maxWidth = 600
+highNumOfComponent = 1000

@@ -108,6 +108,7 @@ class Context:
         self.loadHOGModel()
         self.loadSIFTModel()
         self.loadSURFModel()
+        self.images.loadTrainLabels()
         self.images.loadNumOfLogosPerClass()
         with open(constants.bestXY, 'rb+') as f:
             self.x, self.y = pickle.load(f)
@@ -122,11 +123,12 @@ class Context:
         self.surf.loadSURFModel()
 
 
-ctx = Context()
-ctx.loadData()
-ctx.createModels()
-ctx.checkMis()
-ctx.plotProbabilities()
-ctx.calculatePredFromProb()
-ctx.checkConfidenceOfDifferentClassifier()
-ctx.allMiss()
+if __name__ == "__main__":
+    ctx = Context()
+    ctx.loadData()
+    ctx.createModels()
+    ctx.checkMis()
+    ctx.plotProbabilities()
+    ctx.calculatePredFromProb()
+    ctx.checkConfidenceOfDifferentClassifier()
+    ctx.allMiss()

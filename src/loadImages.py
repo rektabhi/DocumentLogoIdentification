@@ -59,7 +59,7 @@ class LoadImages:
 
     def preprocessImage(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        img = self.imbinarize(img)
+        img = utils.imbinarize(img)
         if detectNoise(img) > constants.saltAndPepperThreshold:
             img = self.removeSaltAndPepperNoise(img)
         return img
