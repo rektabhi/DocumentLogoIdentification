@@ -70,9 +70,11 @@ def rgb2gray(image):
         return image
 
 
-def imbinarize(image):
-    # ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    imgf = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+def imbinarize(image, mode=constants.ADAPTIVE_THRESHOLD):
+    if mode is constants.ADAPTIVE_THRESHOLD:
+        imgf = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    else:
+        ret, imgf = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     return imgf
 

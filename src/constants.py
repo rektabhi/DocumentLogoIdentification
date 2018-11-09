@@ -25,6 +25,7 @@ SURFLabelLoc = '../models/SURFLabels.npy'
 HOGModelLoc = '../models/HOGModel'
 ScalerLoc = '../models/Scaler'
 bestXY = '../models/bestXY'
+ADAPTIVE_THRESHOLD = 1
 
 
 numOfDilation = 5
