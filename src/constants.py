@@ -28,7 +28,7 @@ bestXY = '../models/bestXY'
 ADAPTIVE_THRESHOLD = 1
 
 
-numOfDilation = 5
+numOfDilation = 6
 binarizeOriginal = False
 kernel = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])
 kernel_ones = np.ones((3, 3), dtype=np.uint8)

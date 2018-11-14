@@ -4,9 +4,6 @@ import src.utils as utils
 
 
 def erode(image, debug=True):
-    # loc = "C:/Users/Abhishek Bansal/Desktop/Image Processing/Logo Identification/Logo.png"
-    # image = cv2.imread(loc)
-
     kernel = constants.kernel_ones
     image = utils.rgb2gray(image)
     if constants.binarizeOriginal:

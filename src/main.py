@@ -74,6 +74,8 @@ class Context:
                         isSURFGood = True
                     if np.amax(self.hog.probability, axis=1)[i] > y:
                         ispredFromProbGood = True
+                    if self.sift.probability[i] > y:
+                        isSIFTGood = True
                     if self.predFromProb[i] == self.surf.predictions[i]:
                         bestPrediction[i] = self.surf.predictions[i]
                     elif self.hog.predictions[i] == self.surf.predictions[i]:
@@ -94,6 +96,45 @@ class Context:
         print(minx, miny, "Minimum: ", minimum)
         with open(constants.bestXY, 'wb+') as f:
             pickle.dump([minx, miny], f)
+
+    def checkConfidenceOfDifferentClassifier2(self):
+        minimum = 20
+        minx = None
+        miny = None
+        for y in np.linspace(0, 10, 25):
+            for x in np.linspace(0, 10, 25):
+                bestPrediction = np.zeros((constants.numTestImages,))
+                for i in range(constants.numTestImages):
+                    isSURFGood = False
+                    isSIFTGood = False
+                    if self.surf.probability[i] > x:
+                        isSURFGood = True
+                    if self.sift.probability[i] > y:
+                        isSIFTGood = True
+                    if self.sift.predictions[i] == self.surf.predictions[i]:
+                        bestPrediction[i] = self.sift.predictions[i]
+                    elif isSURFGood and not isSIFTGood:
+                        bestPrediction[i] = self.surf.predictions[i]
+                    elif isSIFTGood and not isSURFGood:
+                        bestPrediction[i] = self.sift.predictions[i]
+                    elif isSURFGood and isSIFTGood:
+                        if self.surf.probability[i] - x > self.sift.probability[i] - y:
+                            bestPrediction[i] = self.surf.predictions[i]
+                        else:
+                            bestPrediction[i] = self.sift.predictions[i]
+                    else:
+                        bestPrediction[i] = self.surf.predictions[i]
+
+                bestMis = utils.checkMispredictions(testLabels, bestPrediction)
+                print(x, y, utils.countMis(bestMis))
+                if utils.countMis(bestMis) < minimum:
+                    minimum = utils.countMis(bestMis)
+                    minx = x
+                    miny = y
+        print(minx, miny, "Minimum: ", minimum)
+        with open(constants.bestXY, 'wb+') as f:
+            pickle.dump([minx, miny], f)
+
 
     def allMiss(self):
         count = 0
@@ -130,5 +171,5 @@ if __name__ == "__main__":
     ctx.checkMis()
     ctx.plotProbabilities()
     ctx.calculatePredFromProb()
-    ctx.checkConfidenceOfDifferentClassifier()
+    ctx.checkConfidenceOfDifferentClassifier2()
     ctx.allMiss()

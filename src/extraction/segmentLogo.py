@@ -1,6 +1,6 @@
 import numpy as np
 import src.constants as constants
-
+import src.utils as utils
 
 class SegmentLogo:
 
@@ -11,7 +11,6 @@ class SegmentLogo:
         self.components = components
 
     def segmentLogoByMean(self):
-
         height = np.shape(self.document)[1]
         width = np.shape(self.document)[0]
         print(height, width)
@@ -20,7 +19,6 @@ class SegmentLogo:
             bottom = component["meanx"] + constants.percentageAreaVertical*width
             left = component["meany"] - constants.percentageAreaHorizontal*height
             right = component["meany"] + constants.percentageAreaHorizontal*height
-            print(left, right, top, bottom)
             if top < 0:
                 top = 0
             if bottom < 0:
@@ -36,11 +34,13 @@ class SegmentLogo:
             if left > height:
                 left = height
             if right > height:
-                left = height
+                right = height
             left = int(left)
             right = int(right)
             top = int(top)
             bottom = int(bottom)
-            logo = self.document[top:bottom-1, left:right-1]
+            logo = self.document.copy()[top:bottom-1, left:right-1, :]
+            print(np.shape(logo))
             self.logos.append(logo)
             print(left, right, top, bottom)
+
