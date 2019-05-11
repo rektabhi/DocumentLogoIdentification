@@ -28,22 +28,34 @@ def healthcheck():
 @app.route('/predict_image', methods=['POST'])
 def predict_image():
     print(request.headers)
+    print("Running")
     base64Image = base64.b64decode(request.data)
     pilImage = Image.open(io.BytesIO(base64Image))
+    print("Still Running")
     cv2Image = cv2.cvtColor(np.array(pilImage), cv2.COLOR_RGB2BGR)
     print("Extracting Logo!")
     extract = ExtractLogo()
-    from src.extraction.detectPage import detectPage
     import src.utils as utils
-    cv2Image = detectPage(cv2Image)
+    # Detecting page
+    # from src.extraction.detectPage import detectPage
+    # cv2Image = detectPage(cv2Image)
+
+    # Instead of detecting page, directly reduce resolution and process
+    cv2Image = utils.resize(cv2Image)
     utils.imshow(cv2Image)
-    predictedLogoList = extract.extract(cv2Image)
+
+    # No need of segmentation
+    predictedLogoList, urlList = extract.extract(cv2Image, segment=False)
+
     # imFileLoc = "C:/Users/Abhishek Bansal/Desktop/img.jpg"
     # cv2.imwrite(imFileLoc, cv2Image)
 
     response = {}
     response["status"] = 200
     response["answer"] = "Predicted logos are: "
+    response["url"] = urlList[0][2:-1]
+    print(urlList[0])
+    print(response["url"])
     for logo in predictedLogoList:
         response["answer"] += logo
     print(json.dumps(response))

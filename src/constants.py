@@ -16,6 +16,7 @@ waitTimeImage = 5000
 trainImagesLocation = '../data/Train/'
 testImagesLocation = '../data/Test/'
 trainLabelsLoc = '../data/Train/Labels.csv'
+urlLoc = '../data/Train/url.csv'
 SIFTModelLoc = '../models/SIFTModel.npy'
 SIFTLabelLoc = '../models/SIFTLabels.npy'
 SIFTNumOfLogosPerClass = '../models/SIFTNumOfLogosPerClass.npy'

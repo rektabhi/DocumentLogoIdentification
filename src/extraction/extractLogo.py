@@ -19,7 +19,7 @@ class ExtractLogo:
         self.removedEdgeImage = None
         self.blurredImage = None
 
-    def extract(self, image, debug=False):
+    def extract(self, image, debug=False, segment=True):
         self.document = image
         self.debug = debug
 
@@ -28,8 +28,12 @@ class ExtractLogo:
         # utils.imshow(self.erodedImage)
         sl = SegmentLogo(self.resizeImage, self.mergedComponents.mergedComponents)
         # sl = SegmentLogo(orig_image, comp.components)
-        sl.segmentLogoByMean()
+        if segment is True:
+            sl.segmentLogoByMean()
+        else:
+            sl.logos.append(image)
         predictedLogoList = []
+        urlList = []
         for logo in sl.logos:
             utils.imshow(logo)
             # utils.imshow(process_image(logo))
@@ -43,7 +47,8 @@ class ExtractLogo:
             print("Predicted Class: ", ctx.stringLabels[predictedClass-1])
             if predictedClass is not -1:
                 predictedLogoList.append(ctx.stringLabels[predictedClass-1])
-        return predictedLogoList
+                urlList.append(ctx.urlList[predictedClass-1])
+        return predictedLogoList, urlList
 
     def preprocess(self):
         # self.blurredImage = cv2.GaussianBlur(self.document, (5, 5), 0)

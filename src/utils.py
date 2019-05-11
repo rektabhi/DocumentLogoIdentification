@@ -92,5 +92,5 @@ def resize(image):
         if max_width / float(width) < scaling_factor:
             scaling_factor = max_width / float(width)
         image = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-        return image
+    return image
 

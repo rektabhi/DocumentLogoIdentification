@@ -24,6 +24,7 @@ class Context:
         self.sift = SIFT()
         self.surf = SURF()
         self.stringLabels = readLabels()
+        self.urlList = readLabels(constants.urlLoc)
         self.HOGMis = None
         self.SURFMis = None
         self.SIFTMis = None
